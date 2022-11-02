@@ -32,6 +32,7 @@ let data = [
     }
 ];
 
+//---------------下方篩選區塊開始------------------
 //元素定義
 const select = document.querySelector(".regionSearch");
 const ticketArea = document.querySelector(".ticketCard-area")
@@ -81,13 +82,21 @@ function showAllItem(){
 //渲染
 select.addEventListener("change",e => {
     const option = e.target.value;
+    console.log(option);
+    //篩選符合選項的資料
+    let result = data.filter(item => {item.area === option});
+    console.log(result)
     //顯示各套票
     if(option === "全部地區"){       
-        showAllItem()
+        showAllItem();
+    }else if(result.length === 0){
+        console.log("沒有")
+        cantFindArea.innerHTML =`
+        <h3>查無此關鍵字資料</h3>
+        <img src="https://github.com/hexschool/2022-web-layout-training/blob/main/js_week5/no_found.png?raw=true" alt="">
+        `
     }else{
-        let areaItem = "";
-        data.forEach( item => {
-            if(option === item.area){
+        result.forEach( item => {
                 let newItem = `
                 <li class="ticketCard">
                     <div class="ticketCard-img">
@@ -120,19 +129,10 @@ select.addEventListener("change",e => {
                     </div>
                 </li>`
                 areaItem += newItem;
-                }
-        })
-            ticketArea.innerHTML = areaItem
-    }
-
-    //無套票狀態
-    let result = data.filter(item => {item.area === option});
-    if (result.length === 0){
-        cantFindArea.innerHTML =`
-        <h3>查無此關鍵字資料</h3>
-        <img src="https://github.com/hexschool/2022-web-layout-training/blob/main/js_week5/no_found.png?raw=true" alt="">
-        `
-    }
+                })
+                ticketArea.innerHTML = areaItem
+        }   
 })
+//---------------下方篩選區塊結束------------------
 
-
+//---------------上方自訂區塊------------------
