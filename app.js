@@ -33,7 +33,7 @@ let data = [
 ];
 
 //---------------上方自訂區塊開始------------------
-//定義元素
+//get element
 const submitBtn = document.querySelector(".addTicket-btn");
 const select = document.querySelector(".regionSearch");
 const ticketArea = document.querySelector(".ticketCard-area")
@@ -123,9 +123,7 @@ function showAllItem(){
     resultNum.textContent = `本次搜尋共 ${data.length+pastPostResult.length} 筆資料`;
 }
 
-//新增post並渲染頁面
-//取得過去自訂資料
-let pastPost = [];
+//新增套票並渲染頁面
 submitBtn.addEventListener("click",e => {
     let ticketName = document.querySelector("#ticketName").value;
     let ticketImg = document.querySelector("#ticketImgUrl").value;
@@ -134,44 +132,71 @@ submitBtn.addEventListener("click",e => {
     let ticketNum = document.querySelector("#ticketNum").value;
     let ticketRate = document.querySelector("#ticketRate").value;
     let ticketDescription = document.querySelector("#ticketDescription").value;
+    let pastPostResult = JSON.parse(localStorage.getItem("pastPost"));
 
-
-    let nowPost = {};
-    nowPost.ticketName = ticketName;
-    nowPost.ticketImg = ticketImg;
-    nowPost.ticketRegion = ticketRegion;
-    nowPost.ticketPrice = ticketPrice;
-    nowPost.ticketNum = ticketNum;
-    nowPost.ticketRate = ticketRate;
-    nowPost.ticketDescription = ticketDescription;
-
-    pastPost.push(nowPost)
-    localStorage.setItem("pastPost",JSON.stringify(pastPost));
+    if (pastPostResult === null){
+        let pastPost = [];
+        let nowPost = {};
+        nowPost.ticketName = ticketName;
+        nowPost.ticketImg = ticketImg;
+        nowPost.ticketRegion = ticketRegion;
+        nowPost.ticketPrice = ticketPrice;
+        nowPost.ticketNum = ticketNum;
+        nowPost.ticketRate = ticketRate;
+        nowPost.ticketDescription = ticketDescription;
     
-    ticketName = "";
-    ticketImg = "";
-    ticketRegion = "";
-    ticketPrice = "";
-    ticketNum = "";
-    ticketRate = "";
-    ticketDescription = "";
+        pastPost.push(nowPost)
+        localStorage.setItem("pastPost",JSON.stringify(pastPost));
+        
+        ticketName = "";
+        ticketImg = "";
+        ticketRegion = "";
+        ticketPrice = "";
+        ticketNum = "";
+        ticketRate = "";
+        ticketDescription = "";
+    }else{
+        let nowPost = {};
+        nowPost.ticketName = ticketName;
+        nowPost.ticketImg = ticketImg;
+        nowPost.ticketRegion = ticketRegion;
+        nowPost.ticketPrice = ticketPrice;
+        nowPost.ticketNum = ticketNum;
+        nowPost.ticketRate = ticketRate;
+        nowPost.ticketDescription = ticketDescription;
+    
+        pastPostResult.push(nowPost)
+        localStorage.setItem("pastPost",JSON.stringify(pastPostResult));
+        
+        ticketName = "";
+        ticketImg = "";
+        ticketRegion = "";
+        ticketPrice = "";
+        ticketNum = "";
+        ticketRate = "";
+        ticketDescription = "";
+    }
 
     showAllItem()
+    let form = document.querySelector('.addTicket-form');
+    form.reset()
 })
 //---------------上方自訂區塊結束------------------
 
 //---------------下方篩選區塊開始------------------
-//渲染
+//初次券染渲染
 showAllItem()
 
 let pastData = JSON.parse(localStorage.getItem("pastPost"));
 
+//篩選
 select.addEventListener("change",e => {
     const option = e.target.value;
-
+    let pastData = JSON.parse(localStorage.getItem("pastPost"));
     //篩選符合選項的資料
     let result = data.filter(item => item.area === option);
     let pastPostItem = pastData.filter(item => item.ticketRegion === option)
+    console.log(pastData)
     //顯示各套票
     if(option === "全部地區"){       
         showAllItem();
